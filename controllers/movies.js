@@ -5,8 +5,8 @@ const { ObjectId } = mongoose.Types;
 
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
-const ServerError = require('../errors/server-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const { CREATED } = require('../utils/err-status').Status;
 
 const getMovies = (req, res, next) => {
   Movie.find({})
@@ -16,7 +16,7 @@ const getMovies = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'Фильмов нет') next(new NotFoundError('Фильмов нет'));
-      next(new ServerError('Произошла ошибка'));
+      else next(err);
     });
 };
 
@@ -49,10 +49,10 @@ const createMovie = (req, res, next) => {
     nameEN,
     owner,
   })
-    .then((movie) => res.status(201).send(movie))
+    .then((movie) => res.status(CREATED).send(movie))
     .catch((err) => {
       if (err._message === 'movie validation failed') next(new BadRequestError('Переданы некорректные данные'));
-      next(new ServerError('Произошла ошибка'));
+      else next(err);
     });
 };
 
@@ -63,14 +63,12 @@ const deleteMovie = (req, res, next) => {
     })
     .then((movie) => {
       if (!movie.owner.equals(req.user._id)) throw new ForbiddenError('Нельзя удалить чужой фильм');
-      Movie.findByIdAndRemove(req.params.movieId)
+      return Movie.findByIdAndRemove(req.params.movieId)
         .then((movieDelete) => res.send(movieDelete));
     })
     .catch((err) => {
-      if (err.message === 'Нельзя удалить чужой фильм') next(new ForbiddenError('Нельзя удалить чужой фильм'));
-      if (err.message === 'Фильм не найден') next(new NotFoundError('Фильм не найден'));
-      if (err._message === undefined) next(new BadRequestError('Невалидный id'));
-      next(new ServerError('Произошла ошибка'));
+      if (err.name === 'CastError') next(new BadRequestError('Невалидный id'));
+      else next(err);
     });
 };
 

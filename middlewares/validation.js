@@ -1,7 +1,6 @@
 const { celebrate } = require('celebrate');
 const Joi = require('joi-oid');
-
-const regex = /^http[s]?:\/\/(www\.)?[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]*\.[A-Za-z]{2}/; // регулярное выражение для ссылок
+const validator = require('validator');// регулярное выражение для ссылок
 
 const signInValidator = celebrate({
   body: Joi.object().keys({
@@ -47,10 +46,25 @@ const createMovieValidator = celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required().min(4),
     description: Joi.string().required().min(1),
-    image: Joi.string().required().pattern(regex),
-    trailer: Joi.string().required().pattern(regex),
-    thumbnail: Joi.string().required().pattern(regex),
-    movieId: Joi.string().required().min(1),
+    image: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Передана некорректная ссылка для image');
+    }),
+    trailer: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Передана некорректная ссылка для trailer');
+    }),
+    thumbnail: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Передана некорректная ссылка для thumbnail');
+    }),
+    movieId: Joi.number().required().min(1),
     nameRU: Joi.string().required().min(1),
     nameEN: Joi.string().required().min(1),
   }).unknown(true),
