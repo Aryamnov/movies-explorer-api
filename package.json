@@ -1,0 +1,44 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint . --ignore-pattern 'node_modules/' --ignore-pattern 'public/'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryamnov/movies-explorer-api.git"
+  },
+  "author": "Andrey Aryamnov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aryamnov/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/Aryamnov/movies-explorer-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "celebrate": "^15.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.3.0",
+    "express-winston": "^4.1.0",
+    "helmet": "^4.6.0",
+    "joi-oid": "^1.1.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.1.0",
+    "mongoose": "^5.13.7",
+    "validator": "^13.6.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.1",
+    "nodemon": "^2.0.12"
+  }
+}
